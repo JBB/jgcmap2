@@ -1,0 +1,116 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @program.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @program.description %>
+</p>
+
+<p>
+  <b>Start date:</b>
+  <%= @program.start_date %>
+</p>
+
+<p>
+  <b>End date:</b>
+  <%= @program.end_date %>
+</p>
+
+<p>
+  <b>Start time:</b>
+  <%= decimal_to_24hour_time(@program.start_time) %>
+</p>
+
+<p>
+  <b>End time:</b>
+  <%= decimal_to_24hour_time(@program.end_time) %>
+</p>
+
+<p>
+  <b>Repeats:</b>
+  <% unless @program.repeats.nil? %>
+    <%= REPEATS_HASH[@program.repeats] %>
+  <% end %>
+</p>
+
+<p>
+  <b>Range:</b>
+  <%= @program.range %>
+</p>
+
+<p>
+  <b>Age min:</b>
+  <%= @program.age_min %>
+</p>
+
+<p>
+  <b>Age max:</b>
+  <%= @program.age_max %>
+</p>
+
+<p>
+  <b>Cost:</b>
+  <%= display_cost(@program.cost) %>
+</p>
+
+<p>
+  <b>Address1:</b>
+  <%= @program.address1 %>
+</p>
+
+<p>
+  <b>Address2:</b>
+  <%= @program.address2 %>
+</p>
+
+<p>
+  <b>City:</b>
+  <%= @program.city %>
+</p>
+
+<p>
+  <b>State:</b>
+  <%= @program.state %>
+</p>
+
+<p>
+  <b>Zip:</b>
+  <%= @program.zipcode %>
+</p>
+
+<p>
+  <b>Additional zip codes served:</b>
+  <%= @more_served_areas %>
+</p>
+
+<p>
+  <b>Phone:</b>
+  <%= @program.phone %>
+</p>
+
+<p>
+  <b>Website:</b>
+  <%= @program.website %>
+</p>
+
+<p>
+  <b>Categories:</b>
+  <%= @program.categories.collect(&:name).join(', ') %>
+</p>
+<p>
+  <b>Styles:</b>
+  <%= @program.styles.collect(&:name).join(', ') %>
+</p>
+<p>
+  <b>Service people:</b>
+  <%= @program.service_persons.collect(&:last_name).join(', ') %>
+</p>
+
+<% if session[:admin_user] == "1" %>
+  <%= link_to 'Edit', edit_program_path(@program) %> |
+<% end %>
+<%= link_to 'Back', programs_path %>

@@ -1,0 +1,39 @@
+<h1>Listing service_people</h1>
+
+<table>
+  <tr class='heading'>
+    <th>Service group</th>
+    <th>First name</th>
+    <th>Last name</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @service_groups = ServiceGroup.all %>
+<% @service_groups.unshift("fill 0 index spot") %>
+<% @service_people.each do |service_person| %>
+  <tr class='<%= cycle("odd","even") %>'>
+    <% unless service_person.service_group_id.nil? %>
+      <td><%= @service_groups[service_person.service_group_id].name %></td>
+    <% end %>
+    <td><%= service_person.first_name %></td>
+    <td><%= service_person.last_name %></td>
+    <td><%= service_person.email %></td>
+    <td><%= service_person.phone %></td>
+    <td><%= link_to 'Show', service_person %></td>
+    <% if session[:admin_user] == "1" %>
+      <td><%= link_to 'Edit', edit_service_person_path(service_person) %></td>
+      <td><%= link_to 'Destroy', service_person, :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<% if session[:admin_user] == "1" %>
+  <%= link_to 'New Service person', new_service_person_path %>
+<% end %>

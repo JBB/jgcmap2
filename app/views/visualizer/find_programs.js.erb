@@ -1,0 +1,39 @@
+
+deleteOverlays();
+<% if @need_new_map %>
+//change zip code display at top
+  var newCenterAddress = "<span id='center_point'> <%= @user_zipcode %></span>";
+  $("center_point").replace(newCenterAddress)
+//draw new map
+  drawNewMap(<%= @user_lat %>,<%= @user_lon %>);
+<% end %>
+
+
+<% unless @nearbyPrograms.nil? %>
+  //Draw on map and populate panel underneath map
+  <% @nearbyPrograms.each_with_index do |program,index| %>
+    <% details = "#{program.formatted_address}" 
+    detailsPhone = "#{program.phone}" 
+    detailsURL = "#{program.website}" %>
+    showOnMap(<%= program.lat %>, <%= program.lon %>,"<%= program.name %>","<%= details %>","<%= detailsPhone %>","<%= detailsURL %>",<%= index %>);
+
+    <% if index < 20 %>
+      listView(<%= index %>,"<%= program.name %>","<%= program.age_min %>","<%= program.age_max %>","<%= program.formatted_categories %>","<%= program.formatted_repeats %>","<%= program.formatted_hours %>"); 
+    <% end %>
+  <% end %>
+<% end %>
+
+
+<% if @change_zip_problem == true %>
+  var errorMsg = "<%= @err_msgs[:address_not_recognized] %> " + "<%= @user_zipcode %><br />"
+  $("directionNotes").insert ({top: errorMsg})
+  $("directionNotes").highlight({duration: 10})
+  $("directionNotes").fade({duration: 15.0})
+<% end %>
+
+<% if !(@notes.empty?) %>
+  //$("directionNotes").show()
+  $("directionNotes").insert ({top: "<%= @notes %>"})
+  $("directionNotes").highlight({duration: 10})
+  $("directionNotes").fade({duration: 15.0})
+<% end %>

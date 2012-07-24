@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Service group:</b>
+  <%= ServiceGroup.find(@service_person.service_group_id).name %>
+</p>
+
+<p>
+  <b>First name:</b>
+  <%= @service_person.first_name %>
+</p>
+
+<p>
+  <b>Last name:</b>
+  <%= @service_person.last_name %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%= @service_person.email %>
+</p>
+
+<p>
+  <b>Phone:</b>
+  <%= @service_person.phone %>
+</p>
+
+
+<% if session[:admin_user] == "1" %>
+  <%= link_to 'Edit', edit_service_person_path(@service_person) %> |
+<% end %>
+<%= link_to 'Back', service_people_path %>

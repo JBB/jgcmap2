@@ -1,0 +1,153 @@
+<script type="text/javascript">
+  function doUncheck(go) {
+    if (go) {
+      var form = $('service-group-list')
+      var buttons = form.getInputs('checkbox', 'program[category_ids][]')
+      
+      for (i=0; i < buttons.length; i++) {
+        buttons[i].checked = false;
+      }
+    }
+  }
+  
+  function checkTypeAndAgeStatus() {
+    var wantAllTypes = document.getElementById('category_all');
+    if (wantAllTypes.checked) {
+      $('category_list').hide();
+    } else {
+      $('category_list').show();
+    }
+    var wantAllAges = document.getElementById('age_any');
+    if (wantAllAges.checked) {
+      $('age_detail').hide();
+    } else {
+      $('age_detail').show();
+    }
+  }
+
+  function mirrorAddress(val) {
+    $('zip_mirror').value = val;
+  }
+
+  function doAdvFind(radius) {
+    $('radius').value = radius;
+    $('submit-button').click();
+  }
+
+
+</script>
+
+<%= @jbb %>
+
+<table><tr>
+  <td id="left-column" class="left-column">
+    <span id="basic-search"><%= @localized_messaging[:find_a_program] %></span><br />
+    
+    <%= form_tag "/visualize/find_programs", :id => "service-group-list", :method => :post, :remote => true do %>
+      <br />
+      <%= @localized_messaging[:enter_a_zip_or_address] %>:<br />
+      <input type="text" size="14" name="zip" id="zip" value="<%= @user_zipcode %>" onBlur="mirrorAddress(this.value); $('geo-submit-button').click();" /><br />
+      <%= @localized_messaging[:ages] %>: <input id="age_any" name="age_any" type="checkbox" value="1" checked="checked" onclick="$('age_detail').toggle(); return true;"/><%= @localized_messaging[:any] %><br /> 
+      <div id="age_detail" style="display: none;">
+      <%= @localized_messaging[:age_min] %>:<input type="text" size="2" name="age_min" value="8" /><br />
+      <%= @localized_messaging[:age_max] %>:<input type="text" size="2" name="age_max" value="14" />
+      </div>
+
+      <%= @localized_messaging[:type] %>:<input id="category_all" name="category_all" type="checkbox" value="1" checked="checked" onclick="$('category_list').toggle(); doUncheck(this.checked); return true;"/>Any<br /> 
+
+      <div id="category_list" style="display: none;">
+        <% for category in CATEGORIES %>
+          <%= check_box_tag "program[category_ids][]", category[:id] %>
+          <%= category[:name] %><br />
+        <% end %>
+      </div>
+      <%= @localized_messaging[:days_offered] %>:
+      <select id="program_repeats" name="program[repeats]">
+        <option value="any" selected="selected"><%= @localized_messaging[:any_day] %></option>
+        <% for repeat in REPEATS %>
+          <option value="<%= repeat[:id] %>"><%= repeat[:name] %></option>
+        <% end %>
+      </select>  
+      <br />
+      <%= @localized_messaging[:start_time] %>:
+      <select id="start_time" name="start_time">
+        <option value="any" selected="selected"><%= @localized_messaging[:any_time] %></option>
+        <option value="5">5 AM</option>
+        <option value="6">6 AM</option>
+        <option value="7">7 AM</option>
+        <option value="8">8 AM</option>
+        <option value="9">9 AM</option>
+        <option value="10">10 AM</option>
+        <option value="11">11 AM</option>
+        <option value="12">12 PM</option>
+        <option value="13">1 PM</option>
+        <option value="14">2 PM</option>
+        <option value="15">3 PM</option>
+        <option value="16">4 PM</option>
+        <option value="17">5 PM</option>
+        <option value="18">6 PM</option>
+        <option value="19">7 PM</option>
+        <option value="20">8 PM</option>
+      </select>  <br />
+      <%= @localized_messaging[:end_time] %>:
+      <select id="end_time" name="end_time">
+        <option value="any" selected="selected"><%= @localized_messaging[:any_time] %></option>
+        <option value="9">9 AM</option>
+        <option value="10">10 AM</option>
+        <option value="11">11 AM</option>
+        <option value="12">12 PM</option>
+        <option value="13">1 PM</option>
+        <option value="14">2 PM</option>
+        <option value="15">3 PM</option>
+        <option value="16">4 PM</option>
+        <option value="17">5 PM</option>
+        <option value="18">6 PM</option>
+        <option value="19">7 PM</option>
+        <option value="20">8 PM</option>
+        <option value="21">9 PM</option>
+        <option value="22">10 PM</option>
+        <option value="23">11 PM</option>
+        <option value="24">12 AM</option>
+      </select>  
+
+      <input type="hidden" name="radius" id="radius" value="0">
+
+      <br /><br />
+      <%= submit_tag @localized_messaging[:find_programs], :id => "submit-button", :class => "button" %>
+    <% end %>
+    <hr />
+      <input type="button" value='<%= @localized_messaging[:bicycle_paths] %>', id="bicycling-button", class="button", onclick="toggleBicycleRoutes();"/>
+      <%= form_tag "/visualize/find_lat_lon", :id => "service-group-geo", :method => :post, :remote => true do %>
+        <input type="hidden" name="zip_mirror" id="zip_mirror">
+        <%= submit_tag "Geocode Address", :id => "geo-submit-button", :class => "button", :style => "display: none;" %>
+      <% end %>
+    <hr />
+    <a href="#" onclick="$('advanced_find').toggle();"><%= @localized_messaging[:advanced_find] %></a>
+    <div id="advanced_find" style="display: none;">
+      <%= form_tag "/visualize/find_advanced", :id => "advanced_find", :method => :post, :remote => true do %>
+        <%= @localized_messaging[:search_radius] %>:
+        <select id="search_radius" name="search_radius" onChange="doAdvFind(this.value);">
+          <% [5,10,15,25,50].each do |radius| %>
+            <% if radius == @user_radius %>
+              <option value="<%= radius %>" selected="selected"><%= radius %></option>
+            <% else %>
+            <option value="<%= radius %>"><%= radius %></option>
+            <% end %>
+          <% end %>
+        </select>  
+
+        <%= submit_tag "Advanced Find", :id => "adv-find-button", :class => "button", :style => "display: none;" %>
+      <% end %>
+    </div>
+    <hr />
+
+  </td>
+  <td id="middle-column" class="middle-column">
+    <div id="map_canvas" style="width: 100%; height: 500px"></div>
+    <div id="directionsPanel" style="width: 100%; height:100%;">
+       <span id="directionNotes"></span> 
+       <div id="listPane"</div>
+    </div>
+  </td>
+</tr></table>
+<img src="/images/blank-dot.png" onload="checkTypeAndAgeStatus();">

@@ -1,0 +1,130 @@
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# please use the migrations feature of Active Record to incrementally modify your database, and
+# then regenerate this schema definition.
+#
+# Note that this schema.rb definition is the authoritative source for your database schema. If you need
+# to create the application database on another system, you should be using db:schema:load, not running
+# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# you'll amass, the slower it'll run and the greater likelihood for issues).
+#
+# It's strongly recommended to check this file into your version control system.
+
+ActiveRecord::Schema.define(:version => 20100815042606) do
+
+  create_table "categories", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "categories_programs", :id => false, :force => true do |t|
+    t.integer "category_id"
+    t.integer "program_id"
+  end
+
+  add_index "categories_programs", ["category_id"], :name => "index_categories_programs_on_category_id"
+  add_index "categories_programs", ["program_id"], :name => "index_categories_programs_on_program_id"
+
+  create_table "programs", :force => true do |t|
+    t.integer  "service_group_id"
+    t.string   "name"
+    t.text     "description"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.decimal  "start_time",           :precision => 4,  :scale => 2
+    t.decimal  "end_time",             :precision => 4,  :scale => 2
+    t.integer  "start_day_of_week"
+    t.integer  "repeats"
+    t.date     "range"
+    t.integer  "age_min"
+    t.integer  "age_max"
+    t.decimal  "cost",                 :precision => 6,  :scale => 2
+    t.integer  "rating_numerator"
+    t.integer  "rating_denominator"
+    t.string   "address1"
+    t.string   "address2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zipcode"
+    t.string   "phone"
+    t.string   "website"
+    t.string   "formatted_categories"
+    t.string   "formatted_styles"
+    t.string   "formatted_repeats"
+    t.string   "formatted_hours"
+    t.string   "formatted_address"
+    t.decimal  "lat",                  :precision => 15, :scale => 10
+    t.decimal  "lon",                  :precision => 15, :scale => 10
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "programs", ["lat"], :name => "index_programs_on_lat"
+  add_index "programs", ["lon"], :name => "index_programs_on_lon"
+
+  create_table "programs_service_people", :id => false, :force => true do |t|
+    t.integer "service_person_id"
+    t.integer "program_id"
+  end
+
+  create_table "programs_styles", :id => false, :force => true do |t|
+    t.integer "style_id"
+    t.integer "program_id"
+  end
+
+  create_table "repeats", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "served_areas", :force => true do |t|
+    t.integer  "program_id"
+    t.string   "formatted_address"
+    t.decimal  "lat",               :precision => 15, :scale => 10
+    t.decimal  "lon",               :precision => 15, :scale => 10
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "served_areas", ["lat"], :name => "index_served_areas_on_lat"
+  add_index "served_areas", ["lon"], :name => "index_served_areas_on_lon"
+  add_index "served_areas", ["program_id"], :name => "index_served_areas_on_program_id"
+
+  create_table "service_groups", :force => true do |t|
+    t.string   "name"
+    t.string   "address1"
+    t.string   "address2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "phone"
+    t.string   "website"
+    t.date     "inception_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "service_people", :force => true do |t|
+    t.integer  "service_group_id"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.string   "phone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "styles", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "zips", :force => true do |t|
+    t.string   "code"
+    t.string   "city"
+    t.string   "state"
+    t.decimal  "lat",        :precision => 15, :scale => 10
+    t.decimal  "lon",        :precision => 15, :scale => 10
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "zips", ["code"], :name => "index_zips_on_code"
+
+end
